@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 class="m-4 mb-1">My URLs</h1>
+    <p id="info">Track down your short URLs</p>
+
+    <form id="form" autocomplete="off">
+        <label class="mb-2" for="urlInput">Add Shortened URL:</label>
+        <br>
+        <input class="mb-4" type="text" placeholder="e.g. /dir/abc123" id="urlInput" name="urlInput">
+    </form>
+    <h1 id="myUrlsErr"></h1>
+    
+    <h1 id="urlListTitle">List of URLs:</h1>
+    <ul id="myUrlsContainer"></ul>
+
+    <nav class="bottom-nav">
+        <button id="nav-item1" onclick="window.location.href='index.html'" class="nav-item"><p>URL Shortener</p></button> 
+        <button id="nav-item2" onclick="window.location.href='myUrls.html'" class="nav-item"><p>My URLs</p></button>
+        <button id="nav-item3" onclick="window.location.href='checkUrl.html'" class="nav-item"><p>Check URL</p></button>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
