@@ -26,8 +26,8 @@ if(window.location.pathname === "/index.html"){
         const formData = new FormData(form);
         let url = formData.get("urlInput");
 
-        if(!url.startsWith("https://www.", 0)){
-            url = "https://www." + url;
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
         }
 
         console.log(`URL entered: ${url}`);
@@ -50,14 +50,14 @@ if(window.location.pathname === "/index.html"){
             copyLink.style.display = "inline-block";
             warningText.style.display = "block";
             warningSymbol.style.display = "block";
+            
+            copyBtnClicked(copyLink, finalUrl);
         }
         else{
             display.textContent = "Original URL invalid";
             display.style.display = "block";
         }
     });
-
-    copyBtnClicked(copyLink, display.textContent);
 }
 
 // myUrls.html
