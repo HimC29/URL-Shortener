@@ -2,6 +2,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 6cqmax;
 }
 
 h1 {
@@ -173,7 +174,7 @@ input {
     display: none; /* Chrome, Safari */
 }
 
-.copyBtn {
+.copyBtn .remBtn {
     display: block;
     align-self: flex-start;
     font-size: clamp(0.7em, 3vw, 1em);
