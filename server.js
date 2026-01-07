@@ -39,15 +39,14 @@ async function startServer() {
 }
 
 // Rate limiter (to prevent spam)
-app.set("trust proxy", 1);
 const createLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1h
-    max: 10, // Max 10 req per window
-    message: {
-        message: "You've reached the limit. Please try again later."
-    },
+    max: 10,
     standardHeaders: true,
-    legacyHeaders: false
+    legacyHeaders: false,
+    handler: (req, res) => {
+        res.status(429).json({ message: "You've reached the limit. Please try again later." });
+    }
 });
 
 startServer();
