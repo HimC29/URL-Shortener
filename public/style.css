@@ -116,11 +116,61 @@ input {
 
 .MyUrlsUrlDisplay {
     font-size: clamp(1em, 7.5vw, 2em);
+    display: block;
+    max-width: 85vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #ccc;
+    padding: 0 3px;
+}
+
+.urlText a.MyUrlsUrlDisplay {
+    display: block;
+    max-width: 85vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    text-overflow: clip;
+    -webkit-text-overflow: clip;
+    -webkit-overflow-scrolling: touch;
+}
+
+.urlText a.originalUrlDisplay {
+    display: block;
+    font-size: clamp(0.4em, 4.5vw, 1.7em);
+    max-width: 85vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    text-overflow: clip;
+    -webkit-text-overflow: clip;
+    -webkit-overflow-scrolling: touch;
+    color: black;
 }
 
 .originalUrlDisplay {
     font-size: clamp(0.4em, 4.5vw, 1.7em);
-    color: black;
+    display: block;
+    max-width: 85vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.MyUrlsUrlDisplay,
+.originalUrlDisplay {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* old Edge / IE */
+}
+
+.MyUrlsUrlDisplay::-webkit-scrollbar,
+.originalUrlDisplay::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
 }
 
 .copyBtn {
@@ -205,8 +255,15 @@ input {
         font-size: clamp(1em, 3vw, 1.75em);
     }
     .btnWrap {
-        flex-direction: row;
-        align-items: center;
+        flex-direction: column; /* stack buttons vertically */
+        align-items: stretch;
+    }
+
+    .btnWrap > .copyBtn,
+    .btnWrap > .remBtn {
+        display: block;
+        width: 100%;
+        margin: 0.25rem 0;
     }
 }
 
