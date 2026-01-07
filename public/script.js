@@ -225,6 +225,17 @@ if(window.location.pathname === "/checkUrl.html"){
     });
 }
 
+const updateFooterPadding = () => {
+    const nav = document.querySelector(".bottom-nav");
+    if(nav){
+        document.body.style.paddingBottom = nav.offsetHeight * 1.25 + "px";
+    }
+};
+
+// run on load and on resize
+window.addEventListener("load", updateFooterPadding);
+window.addEventListener("resize", updateFooterPadding);
+
 // Functions
 // Copy button
 function copyBtnClicked(element, str){
