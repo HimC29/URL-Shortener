@@ -4,6 +4,7 @@ console.log("1 - Could not receive URL or URL is blank");
 console.log("2 - URL not valid");
 
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 require("dotenv").config();
 const { MongoClient } = require("mongodb");
 
@@ -37,12 +38,23 @@ async function startServer() {
     }
 }
 
+// Rate limiter (to prevent spam)
+app.set("trust proxy", 1);
+const createLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1h
+    max: 10, // Max 10 req per window
+    message: {
+        message: "You've reached the limit. Please try again later."
+    },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
 startServer();
 
 // Routes
-
 // Create new short URL
-app.post("/new", async (req, res) => {
+app.post("/new", createLimiter, async (req, res) => {
     if (!db) {
         return res.status(500).json({ message: 1 });
     }
@@ -78,7 +90,8 @@ app.post("/new", async (req, res) => {
         _id: randomId,
         url: url,
         time: getFormattedDate(),
-        clicks: 0
+        clicks: 0,
+        ip: req.ip
     });
 
     console.log(0);
@@ -180,7 +193,8 @@ function getFormattedDate() {
     const day = String(now.getUTCDate()).padStart(2, "0");
     const month = String(now.getUTCMonth() + 1).padStart(2, "0");
     const year = now.getUTCFullYear();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
 
-    return `${day}/${month}/${year}`;
+    return `${day}/${month}/${year} ${hour}:${minute}`;
 }
-
