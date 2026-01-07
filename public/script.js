@@ -41,6 +41,7 @@ if(window.location.pathname === "/index.html"){
         if(response.status === 429){
             display.textContent = "ERROR: Too many /new requests in a window. Please try again later.";
             display.style.display = "block";
+            linkATag.classList.add("error-link");
             return;
         }
 
@@ -56,12 +57,14 @@ if(window.location.pathname === "/index.html"){
             copyLink.style.display = "inline-block";
             warningText.style.display = "block";
             warningSymbol.style.display = "block";
+            linkATag.classList.remove("error-link");
             
             copyBtnClicked(copyLink, finalUrl);
         }
         else{
             display.textContent = "Original URL invalid";
             display.style.display = "block";
+            linkATag.classList.add("error-link");
         }
     });
 }
