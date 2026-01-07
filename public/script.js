@@ -69,112 +69,109 @@ if (window.location.pathname === "/myUrls.html") {
     navItem2.style.color = "#00d4ff";
     navItem2.style.backgroundColor = "#444";
 
-    // Draw list from localStorage
     const renderList = () => {
         myUrlsContainer.innerHTML = "";
         const savedUrls = JSON.parse(localStorage.getItem("myShortUrls") || "[]");
-    
-        // Loop backwards so newest URL is at the top
-        savedUrls.reverse().forEach(data => {
+
+        savedUrls.reverse().forEach(data=>{
             const item = document.createElement("li");
             item.classList.add("urlItem");
 
-            const flexWrap = document.createElement("div")
+            const flexWrap = document.createElement("div");
             flexWrap.classList.add("url-flex-wrapper");
 
             const textWrap = document.createElement("div");
-            textWrap.classList.add("urlText")
+            textWrap.classList.add("urlText");
 
             const shortA = document.createElement("a");
             shortA.href = data.short;
             shortA.textContent = data.short;
-            shortA.classList.add("MyUrlsUrlDisplay");
+            shortA.classList.add("MyUrlsUrlDisplay","scroll-fade");
 
             const origA = document.createElement("a");
             origA.href = data.original;
             origA.textContent = data.original;
-            origA.classList.add("originalUrlDisplay");
+            origA.classList.add("originalUrlDisplay","scroll-fade");
 
             const btn = document.createElement("button");
             btn.textContent = "🗒️ Copy";
-            btn.classList.add("btn", "btn-outline-primary", "copyBtn");
-            
-            copyBtnClicked(btn, data.short);
+            btn.classList.add("btn","btn-outline-primary","copyBtn");
+            copyBtnClicked(btn,data.short);
 
             const btn2 = document.createElement("button");
             btn2.textContent = "🗑️ Remove";
-            btn2.classList.add("btn", "btn-outline-primary", "remBtn");
+            btn2.classList.add("btn","btn-outline-primary","remBtn");
 
-            btn2.addEventListener("click", () => {
-                const index = savedUrls.findIndex(savedUrls => savedUrls.short === data.short);
-                console.log(index);
-                
-                savedUrls.splice(index, 1);
-                localStorage.setItem("myShortUrls", JSON.stringify(savedUrls));
+            btn2.addEventListener("click",()=>{
+                const list = JSON.parse(localStorage.getItem("myShortUrls")||"[]");
+                const index = list.findIndex(u=>u.short===data.short);
+                list.splice(index,1);
+                localStorage.setItem("myShortUrls",JSON.stringify(list));
                 renderList();
             });
 
             textWrap.appendChild(shortA);
             textWrap.appendChild(origA);
-            
+
             const btnWrap = document.createElement("div");
             btnWrap.classList.add("btnWrap");
-
             btnWrap.appendChild(btn);
             btnWrap.appendChild(btn2);
 
             flexWrap.appendChild(textWrap);
             flexWrap.appendChild(btnWrap);
-
             item.appendChild(flexWrap);
             myUrlsContainer.appendChild(item);
         });
-    }
+
+        const displays = myUrlsContainer.querySelectorAll(".MyUrlsUrlDisplay,.originalUrlDisplay");
+        displays.forEach(el=>{
+            el.scrollLeft = el.scrollWidth;
+
+            el.addEventListener("wheel",e=>{
+                if(e.deltaY!==0){
+                    e.preventDefault();
+                    el.scrollLeft += e.deltaY * 0.25;
+                }
+            },{passive:false});
+        });
+    };
 
     renderList();
 
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", async e=>{
         e.preventDefault();
-        const formData = new FormData(form);
-        let urlInput = formData.get("urlInput");
+        const id = new FormData(form).get("urlInput").slice(-6);
 
-        const id = urlInput.slice(-6);
-
-        const response = await fetch("/check", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url: id })
+        const res = await fetch("/check",{
+            method:"POST",
+            headers:{ "Content-Type":"application/json" },
+            body:JSON.stringify({ url:id })
         });
 
-        const fetchData = await response.json();
+        const data = await res.json();
 
-        if(fetchData.message === 0){
-            myUrlsErr.style.display = "none";
+        if(data.message===0){
+            myUrlsErr.style.display="none";
+            const list = JSON.parse(localStorage.getItem("myShortUrls")||"[]");
 
-            // New data object
-            const newUrlData = {
-                short: `${window.location.origin}/dir/${id}`,
-                original: fetchData.original
+            const newItem = {
+                short:`${window.location.origin}/dir/${id}`,
+                original:data.original
             };
 
-            // Save to localStorage array
-            const savedUrls = JSON.parse(localStorage.getItem("myShortUrls") || "[]");
-            
-            if (!savedUrls.some(u => u.short === newUrlData.short)) {
-                savedUrls.push(newUrlData);
-                localStorage.setItem("myShortUrls", JSON.stringify(savedUrls));
-                // Refresh the display
+            if(!list.some(u=>u.short===newItem.short)){
+                list.push(newItem);
+                localStorage.setItem("myShortUrls",JSON.stringify(list));
                 renderList();
                 form.reset();
+            }else{
+                myUrlsErr.textContent="The URL you gave is already in your list.";
+                myUrlsErr.style.display="block";
             }
-            else{
-                myUrlsErr.textContent = "The URL you gave is already in your list.";
-                myUrlsErr.style.display = "block";
-                return;
-            }
-        } else {
-            myUrlsErr.textContent = "URL does not exist.";
-            myUrlsErr.style.display = "block";
+        }else{
+            myUrlsErr.textContent="URL does not exist.";
+            myUrlsErr.style.display="block";
         }
     });
 }
