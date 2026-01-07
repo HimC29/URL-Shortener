@@ -162,16 +162,17 @@ app.get("/dir/:id", async (req, res) => {
 });
 
 // Functions
-// Check if can access URL
+// Check if URL is valid or not
 function isValidUrl(url) {
     try {
         const u = new URL(url);
-
-        // Allow only http/https
         if (!["http:", "https:"].includes(u.protocol)) return false;
 
-        // Block local/private IPs (for privacy)
         const host = u.hostname;
+        // must contain a dot, e.g., google.com
+        if (!host.includes(".")) return false;
+
+        // optional: prevent localhost / private IPs
         if (
             host === "localhost" ||
             host === "127.0.0.1" ||
@@ -180,12 +181,17 @@ function isValidUrl(url) {
             host.startsWith("172.")
         ) return false;
 
+        // optional: simple TLD check
+        const tld = host.split(".").pop();
+        if (tld.length < 2 || tld.length > 6) return false;
+
         return true;
     } catch {
         return false;
     }
 }
 
+// Get formatted date
 function getFormattedDate() {
     const now = new Date();
 
