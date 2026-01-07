@@ -38,6 +38,12 @@ if(window.location.pathname === "/index.html"){
             body: JSON.stringify({ url })
         });
 
+        if(response.status === 429){
+            display.textContent = "ERROR: Too many /new requests in a window. Please try again later.";
+            display.style.display = "block";
+            return;
+        }
+
         const fetchData = await response.json();
         console.log(`Message: ${fetchData.message}`);
         console.log(`ID: ${fetchData.id}`);
@@ -221,7 +227,7 @@ if(window.location.pathname === "/checkUrl.html"){
     copyLink.addEventListener("click", () => {
         navigator.clipboard.writeText(display.textContent);
         copyLink.textContent = "Copied!"
-        const timeoutId = setTimeout(() => {copyLink.textContent = "🗒️ Copy Link"}, 1500);
+        setTimeout(() => {copyLink.textContent = "🗒️ Copy Link"}, 1500);
     });
 }
 
