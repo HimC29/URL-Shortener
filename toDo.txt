@@ -1,0 +1,6 @@
+index.html:
+Optimize by not sending to backend if detected that theres already too many requests
+Remove text in input after submit and do not return anything if nothing is sent
+
+ideas:
+Make another page to check data of links, e.g. clicks and date created

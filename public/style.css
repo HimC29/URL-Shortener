@@ -1,0 +1,321 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 6cqmax;
+}
+
+h1 {
+    font-size: clamp(1em, 10vw, 4em);
+    font-weight: 700;
+}
+
+#info {
+    font-size: clamp(0.5em, 6vw, 2em);
+    font-weight: 640;
+}
+
+label {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+input {
+    font-size: 2rem;
+    width: 80vw;
+    padding: 0 0.5rem;
+}
+
+/* Hidden elements - only show when JavaScript triggers them */
+#display, 
+#copyLink, 
+#warningSymbol, 
+#warningText, 
+#myUrlsErr {
+    display: none;
+}
+
+#display {
+    font-size: 2rem;
+    width: clamp(10em, 90vw, 40em);
+    white-space: nowrap;
+    overflow-x: auto;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+#linkATag {
+    margin: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+#warningSymbol {
+    margin-top: 1.5rem;
+    font-size: 3rem;
+    text-align: center;
+}
+
+#warningText {
+    margin: 0rem 2rem;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+#myUrlsErr {
+    font-size: clamp(0.5em, 6vw, 2.5em);
+    font-weight: 500;
+    margin-top: 0;
+    display: none;
+}
+
+#urlListTitle {
+    font-size: clamp(1em, 7.5vw, 3em);
+    margin: 0.1rem;
+    margin-bottom: 1rem;
+    font-weight: 650;
+}
+
+/* List and Bullet Styling */
+#myUrlsContainer {
+    padding-left: 2.5rem;
+    margin: 0;
+    width: 100%;
+}
+
+.urlItem {
+    display: list-item;
+    list-style-type: disc;
+    margin-bottom: 1.5rem;
+    max-width: 90vw;
+}
+
+/* Internal layout for the bullet items */
+.url-flex-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    width: 100%;
+}
+
+.urlText {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.urlText a {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: underline;
+    color: black;
+    min-width: 0;
+    max-width: 85vw;
+}
+
+a.error-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: default;
+}
+
+.MyUrlsUrlDisplay {
+    font-size: clamp(1em, 7.5vw, 2em);
+    display: block;
+    max-width: 85vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #ccc;
+    padding: 0 3px;
+}
+
+.urlText a.MyUrlsUrlDisplay {
+    display: block;
+    max-width: 85vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    text-overflow: clip;
+    -webkit-text-overflow: clip;
+    -webkit-overflow-scrolling: touch;
+}
+
+.urlText a.originalUrlDisplay {
+    display: block;
+    font-size: clamp(0.4em, 4.5vw, 1.7em);
+    max-width: 85vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    text-overflow: clip;
+    -webkit-text-overflow: clip;
+    -webkit-overflow-scrolling: touch;
+    color: black;
+}
+
+.originalUrlDisplay {
+    font-size: clamp(0.4em, 4.5vw, 1.7em);
+    display: block;
+    max-width: 85vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.MyUrlsUrlDisplay,
+.originalUrlDisplay {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* old Edge / IE */
+}
+
+.MyUrlsUrlDisplay::-webkit-scrollbar,
+.originalUrlDisplay::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+
+.copyBtn .remBtn {
+    display: block;
+    align-self: flex-start;
+    font-size: clamp(0.7em, 3vw, 1em);
+    white-space: nowrap;
+}
+
+.btnWrap {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: row;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #222;
+    padding: 1rem 0;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.bottom-nav .nav-item {
+    background-color: rgb(49, 104, 213);
+    color: #fff;
+    padding: 0.75rem 0.75rem;
+    text-decoration: none;
+    font-size: clamp(1em, 4vw, 1.25em);
+    border: none;
+    border-radius: 0.5rem;
+    width: 25vw;
+    display: flex;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.bottom-nav .nav-item:hover {
+    color: #00d4ff;
+    background-color: #444;
+}
+
+.nav-item p {
+    margin: 0;
+    width: min-content;
+}
+
+@media screen and (min-width: 800px) {
+    body, input {
+        text-align: center;
+    }
+
+    #myUrlsContainer {
+        text-align: left;
+    }
+
+    .url-flex-wrapper {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .urlText {
+        flex: 1;
+        min-width: 0;
+        flex-direction: column;
+    }
+
+    .copyBtn {
+        align-self: center;
+    }
+
+    .nav-item p {
+        width: 100%;
+        font-size: clamp(1em, 3vw, 1.75em);
+    }
+    .btnWrap {
+        flex-direction: column; /* stack buttons vertically */
+        align-items: stretch;
+    }
+
+    .btnWrap > .copyBtn,
+    .btnWrap > .remBtn {
+        display: block;
+        width: 100%;
+        margin: 0.25rem 0;
+    }
+}
+
+@media screen and (min-width: 1050px) {
+    body, input {
+        text-align: center;
+    }
+
+    /* Centers the list items horizontally on the page */
+    #myUrlsContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-left: 0; /* Remove left padding to ensure true centering */
+    }
+
+    /* Controls the width of the row and alignment with the bullet */
+    .urlItem {
+        display: list-item;
+        width: fit-content; /* Row only takes up as much space as the content */
+        text-align: left;   /* Keeps text left-aligned within the centered row */
+        margin-left: 2rem;  /* Gives room for the bullet to show up while centered */
+    }
+
+    .url-flex-wrapper {
+        flex-direction: row;
+        justify-content: flex-start; 
+        align-items: center;
+        gap: 2rem; /* Controls space between text and button */
+    }
+
+    .urlText {
+        flex: 0 1 auto; 
+        min-width: 0;
+        flex-direction: column;
+    }
+
+    .copyBtn {
+        align-self: center;
+    }
+
+    .nav-item p {
+        width: 100%;
+        font-size: clamp(1em, 3vw, 1.75em);
+    }
+}
+
+
