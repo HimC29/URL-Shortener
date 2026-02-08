@@ -1,8 +1,3 @@
-console.log("Messages:")
-    console.log("0 - No problems");
-    console.log("1 - Could not receive URL or URL is blank");
-    console.log("2 - URL not valid");
-
 // Redirect / to index.html
 if(window.location.pathname === "/"){
     window.location.href = "/index.html"
@@ -14,11 +9,8 @@ if(window.location.pathname === "/index.html"){
     const display = document.getElementById("display");
     const linkATag = document.getElementById("linkATag");
     const copyLink = document.getElementById("copyLink");
-    const navItem1 = document.getElementById("nav-item1");
     const warningSymbol = document.getElementById("warningSymbol");
     const warningText = document.getElementById("warningText");
-    navItem1.style.color = "#00d4ff";
-    navItem1.style.backgroundColor = "#444";
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -38,18 +30,17 @@ if(window.location.pathname === "/index.html"){
             body: JSON.stringify({ url })
         });
 
-        if(response.status === 429){
-            display.textContent = "ERROR: Too many /new requests in a window. Please try again later.";
+        const fetchData = await response.json();
+
+        if (response.status === 429) {
+            display.textContent = "Too many requests. Please try again later.";
             display.style.display = "block";
+            display.classList.add("error-display");
             linkATag.classList.add("error-link");
             return;
         }
 
-        const fetchData = await response.json();
-        console.log(`Message: ${fetchData.message}`);
-        console.log(`ID: ${fetchData.id}`);
-
-        if(fetchData.message === 0){
+        if (response.ok) {
             const finalUrl = `${window.location.origin}/dir/${fetchData.id}`;
             display.textContent = finalUrl;
             linkATag.href = finalUrl;
@@ -57,13 +48,13 @@ if(window.location.pathname === "/index.html"){
             copyLink.style.display = "inline-block";
             warningText.style.display = "block";
             warningSymbol.style.display = "block";
+            display.classList.remove("error-display");
             linkATag.classList.remove("error-link");
-            
             copyBtnClicked(copyLink, finalUrl);
-        }
-        else{
-            display.textContent = "Original URL invalid";
+        } else {
+            display.textContent = fetchData.error || "Invalid URL. Please try again.";
             display.style.display = "block";
+            display.classList.add("error-display");
             linkATag.classList.add("error-link");
         }
     });
@@ -74,9 +65,6 @@ if (window.location.pathname === "/myUrls.html") {
     const form = document.getElementById("form");
     const myUrlsErr = document.getElementById("myUrlsErr");
     const myUrlsContainer = document.getElementById("myUrlsContainer");
-    const navItem2 = document.getElementById("nav-item2");
-    navItem2.style.color = "#00d4ff";
-    navItem2.style.backgroundColor = "#444";
 
     const renderList = () => {
         myUrlsContainer.innerHTML = "";
@@ -103,12 +91,13 @@ if (window.location.pathname === "/myUrls.html") {
             origA.classList.add("originalUrlDisplay","scroll-fade");
 
             const btn = document.createElement("button");
-            btn.textContent = "🗒️ Copy";
-            btn.classList.add("btn","btn-outline-primary","copyBtn");
+            btn.textContent = "Copy";
+            btn.dataset.copyLabel = "Copy";
+            btn.classList.add("btn", "btn-outline-primary", "copyBtn");
             copyBtnClicked(btn,data.short);
 
             const btn2 = document.createElement("button");
-            btn2.textContent = "🗑️ Remove";
+            btn2.textContent = "Remove";
             btn2.classList.add("btn","btn-outline-primary","remBtn");
 
             btn2.addEventListener("click",()=>{
@@ -160,27 +149,26 @@ if (window.location.pathname === "/myUrls.html") {
 
         const data = await res.json();
 
-        if(data.message===0){
-            myUrlsErr.style.display="none";
-            const list = JSON.parse(localStorage.getItem("myShortUrls")||"[]");
-
+        if (res.ok) {
+            myUrlsErr.style.display = "none";
+            const list = JSON.parse(localStorage.getItem("myShortUrls") || "[]");
             const newItem = {
-                short:`${window.location.origin}/dir/${id}`,
-                original:data.original
+                short: `${window.location.origin}/dir/${id}`,
+                original: data.original
             };
 
-            if(!list.some(u=>u.short===newItem.short)){
+            if (!list.some(u => u.short === newItem.short)) {
                 list.push(newItem);
-                localStorage.setItem("myShortUrls",JSON.stringify(list));
+                localStorage.setItem("myShortUrls", JSON.stringify(list));
                 renderList();
                 form.reset();
-            }else{
-                myUrlsErr.textContent="The URL you gave is already in your list.";
-                myUrlsErr.style.display="block";
+            } else {
+                myUrlsErr.textContent = "This URL is already in your list.";
+                myUrlsErr.style.display = "block";
             }
-        }else{
-            myUrlsErr.textContent="URL does not exist.";
-            myUrlsErr.style.display="block";
+        } else {
+            myUrlsErr.textContent = data.error || "URL not found.";
+            myUrlsErr.style.display = "block";
         }
     });
 }
@@ -191,9 +179,6 @@ if(window.location.pathname === "/checkUrl.html"){
     const display = document.getElementById("display");
     const linkATag = document.getElementById("linkATag");
     const copyLink = document.getElementById("copyLink");
-    const navItem3 = document.getElementById("nav-item3");
-    navItem3.style.color = "#00d4ff";
-    navItem3.style.backgroundColor = "#444";
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -211,46 +196,36 @@ if(window.location.pathname === "/checkUrl.html"){
         });
 
         const fetchData = await response.json();
-        console.log(`Message: ${fetchData.message}`);
-        console.log(`Original URL: ${fetchData.original}`);
 
-        if(fetchData.message === 0){
-            const originalUrl = fetchData.original;
-            display.textContent = originalUrl;
-            linkATag.href = originalUrl;
+        if (response.ok) {
+            display.textContent = fetchData.original;
+            linkATag.href = fetchData.original;
             display.style.display = "block";
             copyLink.style.display = "inline-block";
-        }
-        else{
-            display.textContent = "Original URL invalid";
+            display.classList.remove("error-display");
+            linkATag.classList.remove("error-link");
+        } else {
+            display.textContent = fetchData.error || "URL not found.";
             display.style.display = "block";
+            display.classList.add("error-display");
+            linkATag.classList.add("error-link");
         }
     });
     
+    copyLink.dataset.copyLabel = "Copy Original Link";
     copyLink.addEventListener("click", () => {
         navigator.clipboard.writeText(display.textContent);
-        copyLink.textContent = "Copied!"
-        setTimeout(() => {copyLink.textContent = "🗒️ Copy Link"}, 1500);
+        copyLink.textContent = "Copied!";
+        setTimeout(() => { copyLink.textContent = "Copy Original Link"; }, 1500);
     });
 }
 
-const updateFooterPadding = () => {
-    const nav = document.querySelector(".bottom-nav");
-    if(nav){
-        document.body.style.paddingBottom = nav.offsetHeight * 1.25 + "px";
-    }
-};
-
-// run on load and on resize
-window.addEventListener("load", updateFooterPadding);
-window.addEventListener("resize", updateFooterPadding);
-
 // Functions
 // Copy button
-function copyBtnClicked(element, str){
+function copyBtnClicked(element, str) {
     element.addEventListener("click", () => {
-            navigator.clipboard.writeText(str);
-            element.textContent = "Copied!"
-            setTimeout(() => {element.textContent = "🗒️ Copy Link"}, 1500);
-        });
+        navigator.clipboard.writeText(str);
+        element.textContent = "Copied!";
+        setTimeout(() => { element.textContent = element.dataset.copyLabel || "Copy Link"; }, 1500);
+    });
 }

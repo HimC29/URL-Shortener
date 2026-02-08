@@ -1,8 +1,3 @@
-console.log("Messages:");
-    console.log("0 - No problems");
-    console.log("1 - Could not receive URL or URL is blank");
-    console.log("2 - URL not valid");
-
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 require("dotenv").config();
@@ -55,34 +50,27 @@ startServer();
 // Create new short URL
 app.post("/new", createLimiter, async (req, res) => {
     if (!db) {
-        return res.status(500).json({ message: 1 });
+        return res.status(500).json({ error: "Database unavailable" });
     }
 
     let { url } = req.body;
-    url = url.trim();
+    url = url?.trim();
     console.log(`URL entered: ${url}`);
 
-    if(!url) {
-        console.log(1);
-        return res.json({ message: 1 });
+    if (!url) {
+        return res.status(400).json({ error: "URL is required" });
     }
-    if(!(await isValidUrl(url))){
-        console.log(2);
-        return res.json({ message: 2 })
+    if (!isValidUrl(url)) {
+        return res.status(400).json({ error: "Invalid URL format" });
     }
 
     const collection = db.collection("urlData");
     let randomIdValid = false;
     let randomId;
-    while(!randomIdValid){
+    while (!randomIdValid) {
         randomId = Math.random().toString(36).slice(2, 8);
-
-        const response = await collection.findOne({
-            _id: randomId
-        });
-        if(!response){
-            randomIdValid = true;
-        }
+        const response = await collection.findOne({ _id: randomId });
+        if (!response) randomIdValid = true;
     }
 
     await collection.insertOne({
@@ -93,49 +81,35 @@ app.post("/new", createLimiter, async (req, res) => {
         ip: req.ip
     });
 
-    console.log(0);
-    return res.json({
-        message: 0,
-        id: randomId
-    });
+    return res.status(201).json({ id: randomId });
 });
 
 app.post("/check", async (req, res) => {
     if (!db) {
-        return res.status(500).json({ message: 1 });
+        return res.status(500).json({ error: "Database unavailable" });
     }
 
     let { url } = req.body;
-    url = url.trim();
+    url = url?.trim();
     console.log(`URL entered: ${url}`);
 
-    if(!url) {
-        console.log(1);
-        return res.json({ message: 1 });
+    if (!url) {
+        return res.status(400).json({ error: "Short code is required" });
     }
-    if(url.length !== 6){
-        console.log(2);
-        return res.json({ message: 2 });
+    if (url.length !== 6) {
+        return res.status(400).json({ error: "Short code must be 6 characters" });
     }
 
     const collection = db.collection("urlData");
+    const doc = await collection.findOne({ _id: url });
 
-    const response = await collection.findOne({
-        _id: url
-    });
-    if(response){
-        console.log(0)
-        return res.json({
-            message: 0,
-            shortened: response._id,
-            original: response.url
-        })
+    if (doc) {
+        return res.status(200).json({
+            shortened: doc._id,
+            original: doc.url
+        });
     }
-    else{
-        console.log(1);
-        return res.json({ message: 1 });
-    }
-
+    return res.status(404).json({ error: "URL not found" });
 });
 
 // Redirect

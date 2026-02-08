@@ -1,83 +1,264 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+    --accent: #0066ff;
+    --accent-hover: #0052cc;
+    --border: #e5e7eb;
+    --text: #1a1a1a;
+    --text-muted: #6b7280;
+    --bg-light: #f9fafb;
+    --radius: 8px;
+    --error: #ef4444;
+    --success: #10b981;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+/* Header */
+header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    padding-bottom: 6cqmax;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--accent);
+}
+
+/* Main Content */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
 }
 
 h1 {
-    font-size: clamp(1em, 10vw, 4em);
+    font-size: 2.5rem;
     font-weight: 700;
+    margin: 0 0 0.5rem;
+    color: var(--text);
 }
 
 #info {
-    font-size: clamp(0.5em, 6vw, 2em);
-    font-weight: 640;
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    margin: 0 0 2.5rem;
+}
+
+/* Form card */
+#form {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
 }
 
 label {
-    font-size: 2rem;
+    display: block;
+    font-size: 0.875rem;
     font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+#form input {
+    margin-bottom: 0.5rem;
 }
 
 input {
-    font-size: 2rem;
-    width: 80vw;
-    padding: 0 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    transition: all 0.2s;
 }
 
-/* Hidden elements - only show when JavaScript triggers them */
-#display, 
-#copyLink, 
-#warningSymbol, 
-#warningText, 
+input::placeholder {
+    color: var(--text-muted);
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+/* Buttons */
+.btn {
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: var(--radius);
+    padding: 0.75rem 1.5rem;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+}
+
+.btn-outline-primary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.btn-outline-primary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.result-box {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.result-box #display {
+    margin-bottom: 0.5rem;
+}
+
+/* Hidden elements */
+#display,
+#copyLink,
+#warningSymbol,
+#warningText,
 #myUrlsErr {
     display: none;
 }
 
+/* Result display */
 #display {
-    font-size: 2rem;
-    width: clamp(10em, 90vw, 40em);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    width: 100%;
     white-space: nowrap;
     overflow-x: auto;
-    border: 1px solid #ccc;
-    padding: 5px;
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin: 0;
+    color: var(--text);
 }
 
 #linkATag {
-    margin: 2rem;
-    margin-bottom: 0.75rem;
+    display: block;
+    margin: 0 0 0.75rem;
+    text-decoration: none;
+    color: var(--accent);
+}
+
+#linkATag:hover:not(.error-link) {
+    text-decoration: underline;
+}
+
+a.error-link {
+    color: var(--error);
+    text-decoration: none;
+    cursor: default;
+}
+
+a.error-link + #display,
+#display.error-display {
+    border-color: rgba(239, 68, 68, 0.5);
+    color: var(--error);
+}
+
+#copyLink {
+    font-size: 0.9rem;
 }
 
 #warningSymbol {
-    margin-top: 1.5rem;
-    font-size: 3rem;
+    margin-top: 1.25rem;
+    font-size: 2rem;
     text-align: center;
 }
 
 #warningText {
-    margin: 0rem 2rem;
-    font-size: 1.5rem;
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
     text-align: center;
+    color: var(--text-muted);
 }
 
 #myUrlsErr {
-    font-size: clamp(0.5em, 6vw, 2.5em);
+    font-size: 1rem;
     font-weight: 500;
-    margin-top: 0;
-    display: none;
+    color: var(--error);
+    margin: 0.5rem 0 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius);
 }
 
 #urlListTitle {
-    font-size: clamp(1em, 7.5vw, 3em);
-    margin: 0.1rem;
-    margin-bottom: 1rem;
-    font-weight: 650;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1rem 0;
 }
 
 /* List and Bullet Styling */
 #myUrlsContainer {
-    padding-left: 2.5rem;
+    padding-left: 2rem;
     margin: 0;
     width: 100%;
 }
@@ -85,16 +266,14 @@ input {
 .urlItem {
     display: list-item;
     list-style-type: disc;
-    margin-bottom: 1.5rem;
-    max-width: 90vw;
+    margin-bottom: 1.25rem;
 }
 
-/* Internal layout for the bullet items */
 .url-flex-wrapper {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.3rem;
+    gap: 0.5rem;
     width: 100%;
 }
 
@@ -102,6 +281,7 @@ input {
     display: flex;
     flex-direction: column;
     min-width: 0;
+    width: 100%;
 }
 
 .urlText a {
@@ -109,81 +289,78 @@ input {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-decoration: underline;
-    color: black;
+    text-decoration: none;
+    color: var(--accent);
     min-width: 0;
-    max-width: 85vw;
 }
 
-a.error-link {
-    color: inherit;
-    text-decoration: none;
-    cursor: default;
+.urlText a:hover {
+    text-decoration: underline;
 }
 
 .MyUrlsUrlDisplay {
-    font-size: clamp(1em, 7.5vw, 2em);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
     display: block;
-    max-width: 85vw;
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid #ccc;
-    padding: 0 3px;
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.75rem;
 }
 
-.urlText a.MyUrlsUrlDisplay {
-    display: block;
-    max-width: 85vw;
-    white-space: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
+.urlText a.MyUrlsUrlDisplay,
+.urlText a.originalUrlDisplay {
     text-overflow: clip;
-    -webkit-text-overflow: clip;
-    -webkit-overflow-scrolling: touch;
 }
 
 .urlText a.originalUrlDisplay {
-    display: block;
-    font-size: clamp(0.4em, 4.5vw, 1.7em);
-    max-width: 85vw;
-    white-space: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    text-overflow: clip;
-    -webkit-text-overflow: clip;
-    -webkit-overflow-scrolling: touch;
-    color: black;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.urlText a.originalUrlDisplay:hover {
+    color: var(--text);
 }
 
 .originalUrlDisplay {
-    font-size: clamp(0.4em, 4.5vw, 1.7em);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
     display: block;
-    max-width: 85vw;
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid #ccc;
-    padding: 5px;
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.75rem;
+    color: var(--text-muted);
 }
 
 .MyUrlsUrlDisplay,
 .originalUrlDisplay {
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* old Edge / IE */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
 }
 
 .MyUrlsUrlDisplay::-webkit-scrollbar,
 .originalUrlDisplay::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    height: 4px;
 }
 
-.copyBtn .remBtn {
+.MyUrlsUrlDisplay::-webkit-scrollbar-thumb,
+.originalUrlDisplay::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
+}
+
+.copyBtn,
+.remBtn {
     display: block;
     align-self: flex-start;
-    font-size: clamp(0.7em, 3vw, 1em);
+    font-size: 0.85rem;
     white-space: nowrap;
 }
 
@@ -193,51 +370,23 @@ a.error-link {
     flex-direction: row;
 }
 
-/* Bottom Navigation */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    background-color: #222;
-    padding: 1rem 0;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
-    z-index: 1000;
-}
-
-.bottom-nav .nav-item {
-    background-color: rgb(49, 104, 213);
-    color: #fff;
-    padding: 0.75rem 0.75rem;
-    text-decoration: none;
-    font-size: clamp(1em, 4vw, 1.25em);
-    border: none;
-    border-radius: 0.5rem;
-    width: 25vw;
-    display: flex;
-    justify-content: center;
-    transition: background 0.2s, color 0.2s;
-}
-
-.bottom-nav .nav-item:hover {
-    color: #00d4ff;
-    background-color: #444;
-}
-
-.nav-item p {
-    margin: 0;
-    width: min-content;
-}
-
-@media screen and (min-width: 800px) {
-    body, input {
-        text-align: center;
+@media screen and (max-width: 768px) {
+    .nav-links {
+        gap: 1rem;
     }
 
-    #myUrlsContainer {
-        text-align: left;
+    h1 {
+        font-size: 2rem;
+    }
+
+    main {
+        padding: 2rem 1rem;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    #form {
+        padding: 2.5rem;
     }
 
     .url-flex-wrapper {
@@ -250,72 +399,14 @@ a.error-link {
     .urlText {
         flex: 1;
         min-width: 0;
-        flex-direction: column;
     }
 
-    .copyBtn {
-        align-self: center;
-    }
-
-    .nav-item p {
-        width: 100%;
-        font-size: clamp(1em, 3vw, 1.75em);
-    }
     .btnWrap {
-        flex-direction: column; /* stack buttons vertically */
-        align-items: stretch;
+        flex-shrink: 0;
     }
 
-    .btnWrap > .copyBtn,
-    .btnWrap > .remBtn {
-        display: block;
-        width: 100%;
-        margin: 0.25rem 0;
-    }
-}
-
-@media screen and (min-width: 1050px) {
-    body, input {
-        text-align: center;
-    }
-
-    /* Centers the list items horizontally on the page */
-    #myUrlsContainer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding-left: 0; /* Remove left padding to ensure true centering */
-    }
-
-    /* Controls the width of the row and alignment with the bullet */
-    .urlItem {
-        display: list-item;
-        width: fit-content; /* Row only takes up as much space as the content */
-        text-align: left;   /* Keeps text left-aligned within the centered row */
-        margin-left: 2rem;  /* Gives room for the bullet to show up while centered */
-    }
-
-    .url-flex-wrapper {
-        flex-direction: row;
-        justify-content: flex-start; 
-        align-items: center;
-        gap: 2rem; /* Controls space between text and button */
-    }
-
-    .urlText {
-        flex: 0 1 auto; 
-        min-width: 0;
-        flex-direction: column;
-    }
-
-    .copyBtn {
+    .copyBtn,
+    .remBtn {
         align-self: center;
     }
-
-    .nav-item p {
-        width: 100%;
-        font-size: clamp(1em, 3vw, 1.75em);
-    }
 }
-
-
